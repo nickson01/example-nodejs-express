@@ -74,7 +74,7 @@ jobs:
               echo "This is ${CIRCLE_BRANCH}"
             fi
       - run: echo released
-deploy:
+  deploy:
     docker:
       - image: circleci/node:8.11.1-stretch
     working_directory: ~/repo
