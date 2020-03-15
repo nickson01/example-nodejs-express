@@ -96,7 +96,7 @@ jobs:
       - run: echo released
 workflows:
   version: 2
-  build_test_ship_deploy:
+  build_test_release_deploy:
     jobs:
       - build
       - test:
@@ -106,5 +106,6 @@ workflows:
           requires:
             - test
       - deploy:
+          type: approval
           requires:
             - release
