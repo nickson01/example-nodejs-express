@@ -107,7 +107,7 @@ workflows:
             - build
             - test
       - deploy:
-          require:
+          requires:
             - build
             - test
             - release
