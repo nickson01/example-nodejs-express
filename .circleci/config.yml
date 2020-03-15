@@ -74,6 +74,26 @@ jobs:
               echo "This is ${CIRCLE_BRANCH}"
             fi
       - run: echo released
+deploy:
+    docker:
+      - image: circleci/node:8.11.1-stretch
+    working_directory: ~/repo
+    steps:
+      - setup_remote_docker
+      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - run:
+          name: "Call to rancher to deploy"
+          command: |
+              docker run --rm -it \
+              -e CATTLE_ACCESS_KEY="$CATTLE_ACCESS_KEY" \
+              -e CATTLE_SECRET_KEY="$CATTLE_SECRET_KEY" \
+              -e CATTLE_URL="$CATTLE_URL" \
+              etlweather/gaucho upgrade $RANCHER_EXAMPLE_NODEJS \
+              --imageUuid 'docker:nickson01/example-nodejs-circle:latest' \
+              --batch_size 3 --start_first \
+              --auto_complete --timeout 600 \
+              /
+      - run: echo released
 workflows:
   version: 2
   build_test_ship_deploy:
@@ -86,3 +106,6 @@ workflows:
           requires:
             - build
             - test
+      - deploy:
+          require:
+            - release
